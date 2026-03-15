@@ -14,6 +14,7 @@ use crate::utils::{format_cpt, format_tokens, format_usd};
 
 // ── Constants ──
 
+#[allow(dead_code)]
 const BILLION: f64 = 1e9;
 
 // API pricing ratios (verified Feb 2026, consistent across Claude models <=200K context)
@@ -386,12 +387,14 @@ fn compute_totals(periods: &[PeriodEconomics]) -> Totals {
 
     // Compute global dual metrics (legacy)
     if totals.cc_total_tokens > 0 {
-        totals.blended_cpt = Some(totals.cc_cost / totals.cc_total_tokens as f64);
-        totals.savings_blended = Some(totals.rtk_saved_tokens as f64 * totals.blended_cpt.unwrap());
+        let cpt = totals.cc_cost / totals.cc_total_tokens as f64;
+        totals.blended_cpt = Some(cpt);
+        totals.savings_blended = Some(totals.rtk_saved_tokens as f64 * cpt);
     }
     if totals.cc_active_tokens > 0 {
-        totals.active_cpt = Some(totals.cc_cost / totals.cc_active_tokens as f64);
-        totals.savings_active = Some(totals.rtk_saved_tokens as f64 * totals.active_cpt.unwrap());
+        let cpt = totals.cc_cost / totals.cc_active_tokens as f64;
+        totals.active_cpt = Some(cpt);
+        totals.savings_active = Some(totals.rtk_saved_tokens as f64 * cpt);
     }
 
     totals
